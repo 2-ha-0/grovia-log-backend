@@ -18,3 +18,23 @@ model Test {
   id   Int    @id @default(autoincrement())
   name String
 }
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String?   @unique
+  password  String?
+  name      String?
+  accounts  Account[]            // 소셜 로그인 계정
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Account {
+  id                Int     @id @default(autoincrement())
+  provider          String  // e.g. 'google', 'github'
+  providerAccountId String  // 해당 provider에서 유저 ID
+  userId            Int
+  user              User    @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerAccountId])
+}
